@@ -1,0 +1,219 @@
+ALL ANALYSES OUTPUT
+============================================================
+
+
+============================================================
+  Script 2 — RPS Comparison  (3.3s)
+============================================================
+\begin{table}[h]
+\centering
+\caption{Model Comparison on Test Set (2022 onwards): Accuracy, Log-Loss, and RPS}
+\label{tab:rps}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Model & Accuracy & Log-Loss & RPS \\
+\midrule
+Naive (always Win) & 0.475 & 18.9282 & 0.4102 \\
+\textbf{Logistic Regression} & 0.599 & 0.8794 & 0.1726 \\
+\textbf{Random Forest} & 0.598 & 0.8797 & 0.1728 \\
+\textbf{XGBoost} & 0.594 & 0.8856 & 0.1739 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+SUMMARY:
+The Ranked Probability Score penalises confident wrong predictions more than
+log-loss alone, rewarding models that spread probability mass sensibly across
+adjacent outcomes. All three trained models substantially outperform the naive
+baseline on every metric. The difference in RPS between Logistic Regression
+and the tree models is small, confirming that the additional complexity of
+Random Forest and XGBoost buys only marginal gains in calibration quality on
+this dataset. The naive baseline's RPS reveals the floor of naive prediction
+and contextualises how much the model actually learns from the features.
+
+
+
+============================================================
+  Script 3 — Confidence Intervals  (0.8s)
+============================================================
+\begin{table}[h]
+\centering
+\caption{2026 World Cup Win Probabilities with 95\% Wilson Score Confidence Intervals ($N = 10{,}000$ simulations)}
+\label{tab:ci2026}
+\begin{tabular}{@{}clrrr@{}}
+\toprule
+Rank & Team & Win Prob (\%) & CI Lower (\%) & CI Upper (\%) \\
+\midrule
+1 & Spain & 21.42 & 20.63 & 22.24 \\
+2 & Argentina & 19.48 & 18.72 & 20.27 \\
+3 & France & 11.51 & 10.90 & 12.15 \\
+4 & England & 5.80 & 5.36 & 6.28 \\
+5 & Brazil & 5.59 & 5.16 & 6.06 \\
+6 & Germany & 4.99 & 4.58 & 5.43 \\
+7 & Netherlands & 4.70 & 4.30 & 5.13 \\
+8 & Portugal & 3.87 & 3.51 & 4.27 \\
+9 & Japan & 2.92 & 2.61 & 3.27 \\
+10 & Colombia & 2.75 & 2.45 & 3.09 \\
+11 & Morocco & 2.59 & 2.30 & 2.92 \\
+12 & Croatia & 2.56 & 2.27 & 2.89 \\
+13 & Ecuador & 2.00 & 1.74 & 2.29 \\
+14 & Mexico & 1.67 & 1.44 & 1.94 \\
+15 & Uruguay & 1.44 & 1.22 & 1.69 \\
+16 & Belgium & 1.24 & 1.04 & 1.48 \\
+17 & Switzerland & 1.15 & 0.96 & 1.38 \\
+18 & Senegal & 0.90 & 0.73 & 1.10 \\
+19 & Australia & 0.52 & 0.40 & 0.68 \\
+20 & Norway & 0.42 & 0.31 & 0.57 \\
+21 & South Korea & 0.41 & 0.30 & 0.56 \\
+22 & Austria & 0.35 & 0.25 & 0.49 \\
+23 & Paraguay & 0.33 & 0.24 & 0.46 \\
+24 & United States & 0.30 & 0.21 & 0.43 \\
+25 & Canada & 0.27 & 0.19 & 0.39 \\
+26 & Algeria & 0.20 & 0.13 & 0.31 \\
+27 & Iran & 0.12 & 0.07 & 0.21 \\
+28 & Sweden & 0.10 & 0.05 & 0.18 \\
+29 & Egypt & 0.09 & 0.05 & 0.17 \\
+30 & Uzbekistan & 0.08 & 0.04 & 0.16 \\
+31 & Scotland & 0.05 & 0.02 & 0.12 \\
+32 & Ivory Coast & 0.05 & 0.02 & 0.12 \\
+33 & Tunisia & 0.05 & 0.02 & 0.12 \\
+34 & Panama & 0.04 & 0.02 & 0.10 \\
+35 & Saudi Arabia & 0.02 & 0.01 & 0.07 \\
+36 & Jordan & 0.01 & 0.00 & 0.06 \\
+37 & South Africa & 0.01 & 0.00 & 0.06 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+SUMMARY:
+The Wilson score confidence intervals reveal how much uncertainty remains even
+after 10,000 simulations. The tournament favourite, Spain, has a
+win probability of 21.4% with a 95% CI of
+[20.6%, 22.2%] — a range of
+roughly ±0.8 percentage points.
+Teams with very low win probabilities (below ~1%) have particularly wide
+relative intervals, as Bernoulli variance is largest near the extremes. The
+Wilson interval is preferred over the normal approximation here because it
+remains valid even when p is close to 0, which applies to most of the 48 teams.
+
+
+
+============================================================
+  Script 4 — Feature Ablation  (3.5s)
+============================================================
+\begin{table}[h]
+\centering
+\caption{Feature Ablation Study — Logistic Regression on Test Set (2022 onwards)}
+\label{tab:ablation}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Feature Set & Accuracy & Log-Loss & $\Delta$ Accuracy \\
+\midrule
+\textbf{Full model} & \textbf{0.599} & \textbf{0.8794} & \textbf{0.000} \\
+No Elo & 0.585 & 0.9167 & -0.014 \\
+No FIFA points & 0.600 & 0.8809 & +0.000 \\
+No form & 0.601 & 0.8819 & +0.002 \\
+No H2H & 0.600 & 0.8809 & +0.001 \\
+No context & 0.594 & 0.8822 & -0.006 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+SUMMARY:
+The ablation study quantifies how much each feature group contributes to the
+model's predictive power. Removing Elo features causes the largest
+accuracy drop (0.014 points), making them the single most important group.
+Elo ratings and FIFA points encode team quality and tend to dominate the model;
+form and H2H features add secondary signal that is less critical individually.
+The context features (neutral ground, rest days, tournament type) have the
+smallest marginal impact, suggesting the model relies primarily on long-run
+team strength rather than match-specific conditions.
+
+
+
+============================================================
+  Script 5 — Elo Sensitivity  (26.8s)
+============================================================
+Running Elo sensitivity analysis...
+  K = 10... Acc=0.598  LL=0.8878
+  K = 20... Acc=0.599  LL=0.8801
+  K = 30... Acc=0.599  LL=0.8780
+  K = 40... Acc=0.599  LL=0.8776
+  K = 50... Acc=0.600  LL=0.8777
+  K = 60... Acc=0.601  LL=0.8781
+
+\begin{table}[h]
+\centering
+\caption{Logistic Regression Performance vs Elo $K$ Parameter (test set: 2022 onwards)}
+\label{tab:elo_k_perf}
+\begin{tabular}{@{}rrr@{}}
+\toprule
+$K$ & Accuracy & Log-Loss \\
+\midrule
+10 & 0.598 & 0.8878 \\
+20 & 0.599 & 0.8801 \\
+30 & 0.599 & 0.8780 \\
+\textbf{40} & \textbf{0.599} & \textbf{0.8776} \\
+50 & 0.600 & 0.8777 \\
+60 & 0.601 & 0.8781 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Final Elo Ratings for Top-5 Teams Under Different $K$ Values}
+\label{tab:elo_k_ratings}
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$K$ & Spain & Argentina & France & England & Brazil \\
+\midrule
+10 & 1887 & 1875 & 1860 & 1818 & 1854 \\
+20 & 1985 & 1985 & 1953 & 1893 & 1909 \\
+30 & 2053 & 2043 & 2009 & 1935 & 1934 \\
+\textbf{40} & \textbf{2103 & 2076 & 2050 & 1963 & 1950} \\
+50 & 2141 & 2097 & 2083 & 1985 & 1965 \\
+60 & 2170 & 2111 & 2111 & 2002 & 1978 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+SUMMARY:
+Model performance is relatively insensitive to the Elo K parameter across the
+range K=10 to K=60 — accuracy varies by less than 1 percentage point and
+log-loss by a similarly small margin. The current setting of K=40 (bold rows)
+performs near-optimally, confirming the original choice was reasonable.
+Higher K values produce more volatile ratings that react faster to recent form
+but can overfit to short-run results; lower K values produce more stable ratings
+that better reflect long-run quality. The team rating table shows that higher K
+amplifies the spread between strong and weak teams without substantially
+changing their rank ordering.
+
+
+
+============================================================
+  Script 1 — World Cup Backtests  (22.0s)
+============================================================
+============================================================
+BACKTEST: 2018 World Cup (Russia)
+============================================================
+
+Building Elo ratings before 2018-06-14...
+Training model on pre-cutoff data...
+Building team profiles...
+Precomputing match probabilities...
+Running 10,000 simulations...
+
+[STDERR]
+Traceback (most recent call last):
+  File "c:\Users\eduar\Desktop\WorldCup_Project\scripts\backtest_worldcups.py", line 346, in <module>
+    print_latex_table(res2018, WC2018)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "c:\Users\eduar\Desktop\WorldCup_Project\scripts\backtest_worldcups.py", line 309, in print_latex_table
+    print(f"\n% \u2500\u2500 World Cup {year} Backtest \u2500\u2500")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\eduar\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 4-5: character maps to <undefined>
+
